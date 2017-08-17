@@ -4,13 +4,14 @@
 __author__ = 'Li Ruhua'
 
 import logging, asyncio, aiomysql
+logging.basicConfig(level = logging.INFO)
 
 def log(sql, args = ()):
     logging.info('SQL: {0}'.format(sql))
 
 ######## 数据库操作协程 ########
 async def create_pool(loop, **kw):
-    logging.info('创建数据库连接池...')
+    logging.info('create database connection pool...')
     global __pool
     __pool = await aiomysql.create_pool(
         host = kw.get('host', 'localhost'),
@@ -34,6 +35,7 @@ async def select(sql, args, size = None):
             rs = await (cur.fetchmany(size) if size else cur.fetchall())
             await cur.close()
         logging.info('rows returned: {0}'.format(len(rs)))
+        conn.close()
         return rs
 
 async def execute(sql, args, autocommit = True):
@@ -45,10 +47,13 @@ async def execute(sql, args, autocommit = True):
             async with conn.cursor(aiomysql.DictCursor) as cur:
                 await cur.execute(sql.replace('?', '%s'), args)
                 affected = cur.rowcount
+                await cur.close()
             if not autocommit: await conn.commit()
         except BaseException as e:
             if not autocommit: await conn.rollback()
             raise
+        finally:
+            conn.close()
         return affected
 
 ######## 数据库字段类 ########
