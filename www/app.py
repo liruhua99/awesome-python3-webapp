@@ -3,13 +3,12 @@
 
 __author__ = 'Li Ruhua'
 
-import os, time, logging, json, asyncio, orm
+import logging; logging.basicConfig(level = logging.INFO) # 这样以后所有的模块都会生效
+import os, time, json, asyncio, orm
 from datetime import datetime
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 from coroweb import add_routes, add_static
-
-logging.basicConfig(level = logging.INFO)
 
 ######## 初始化模板 ########
 def datetime_filter(t):

@@ -5,8 +5,6 @@ __author__ = 'Li Ruhua'
 
 import logging, asyncio, aiomysql
 
-logging.basicConfig(level = logging.INFO)
-
 def log(sql, args = ()):
     logging.info('SQL: {0}'.format(sql))
 

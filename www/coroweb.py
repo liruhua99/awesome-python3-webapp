@@ -8,8 +8,6 @@ from urllib import parse
 from aiohttp import web
 from apis import APIError
 
-logging.basicConfig(level = logging.INFO)
-
 ######## 将函数映射为URL处理函数 ########
 def method_decorate(path, *, method):
     def decorator(func):
