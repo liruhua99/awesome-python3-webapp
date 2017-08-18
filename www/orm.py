@@ -4,6 +4,7 @@
 __author__ = 'Li Ruhua'
 
 import logging, asyncio, aiomysql
+
 logging.basicConfig(level = logging.INFO)
 
 def log(sql, args = ()):
@@ -33,9 +34,7 @@ async def select(sql, args, size = None):
         async with conn.cursor(aiomysql.DictCursor) as cur:
             await cur.execute(sql.replace('?', '%s'), args or ())
             rs = await (cur.fetchmany(size) if size else cur.fetchall())
-            await cur.close()
         logging.info('rows returned: {0}'.format(len(rs)))
-        conn.close()
         return rs
 
 async def execute(sql, args, autocommit = True):
@@ -47,13 +46,10 @@ async def execute(sql, args, autocommit = True):
             async with conn.cursor(aiomysql.DictCursor) as cur:
                 await cur.execute(sql.replace('?', '%s'), args)
                 affected = cur.rowcount
-                await cur.close()
             if not autocommit: await conn.commit()
         except BaseException as e:
             if not autocommit: await conn.rollback()
             raise
-        finally:
-            conn.close()
         return affected
 
 ######## 数据库字段类 ########
