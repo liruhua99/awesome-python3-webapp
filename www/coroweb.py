@@ -60,7 +60,7 @@ def has_request_arg(fn): #判断是否含有名叫'request'参数，且该参数
             continue
         if found and (param.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.KEYWORD_ONLY, inspect.Parameter.VAR_KEYWORD)):
             raise ValueError('request parameter must be the last named parameter in function: {0}{1}'.format(fn.__name__, str(sig)))
-        return found
+    return found
 
 ######## URL函数协程处理对象 ########
 class RequestHandler(object):
